@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Alchemy</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 16px;
+            font-family: Arial, sans-serif;
+            background: #172033;
+            color: #f3f4f6;
+        }
+
+        main {
+            max-width: 700px;
+            margin: auto;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        .panel {
+            background: #253149;
+            border-radius: 14px;
+            padding: 20px;
+            margin: 18px 0;
+        }
+
+        .resources {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            text-align: center;
+        }
+
+        .resource {
+            background: #34435d;
+            border-radius: 10px;
+            padding: 16px 8px;
+        }
+
+        .amount {
+            display: block;
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #65d6ad;
+            color: #172033;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .secondary {
+            background: #9db8ff;
+        }
+
+        #status {
+            overflow-wrap: anywhere;
+            line-height: 1.5;
+        }
+
+        .win {
+            color: #65d6ad;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            .resources {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<main>
+    <h1>⚗️ Resource Alchemy</h1>
+    <p style="text-align:center">
+        Собирай ресурсы, создавай предметы и открывай достижения!
+    </p>
+
+    <section class="panel">
+        <h2>Подключение</h2>
+        <button id="connectButton">Подключить MetaMask</button>
+        <p id="wallet">Кошелёк не подключён</p>
+        <p id="network">Сеть: не проверена</p>
+    </section>
+
+    <section class="panel">
+        <h2>Твои ресурсы</h2>
+        <div class="resources">
+            <div class="resource">
+                🪵 Дерево
+                <span class="amount" id="wood">0</span>
+            </div>
+            <div class="resource">
+                🪨 Камень
+                <span class="amount" id="stone">0</span>
+            </div>
+            <div class="resource">
+                🛠️ Предметы
+                <span class="amount" id="items">0</span>
+            </div>
+        </div>
+        <p id="achievement" class="win">Достижение пока не открыто</p>
+        <button id="refreshButton" class="secondary">Обновить данные</button>
+    </section>
+
+    <section class="panel">
+        <h2>Сбор ресурсов</h2>
+        <p>Дерево: +3 за сбор. Перезарядка: 30 секунд.</p>
+        <button id="woodButton">Собрать дерево</button>
+        <p id="woodTimer">Можно собирать</p>
+
+        <p>Камень: +2 за сбор. Перезарядка: 30 секунд.</p>
+        <button id="stoneButton">Собрать камень</button>
+        <p id="stoneTimer">Можно собирать</p>
+    </section>
+
+    <section class="panel">
+        <h2>Алхимия</h2>
+        <p>Для создания одного предмета требуется 2 дерева и 1 камень.</p>
+        <button id="craftButton">Создать предмет</button>
+        <p>Цель: создать 3 предмета, чтобы открыть достижение.</p>
+    </section>
+
+    <section class="panel">
+        <h2>Сообщения</h2>
+        <p id="status">Подключи MetaMask, чтобы начать игру.</p>
+    </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
