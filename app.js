@@ -32,29 +32,29 @@ function showStatus(message) {
 
 function formatError(error) {
     if (error?.code === 4001) {
-        return "Ты отклонил запрос в MetaMask.";
+        return "You declined transaction in MetaMask.";
     }
 
     const message =
         error?.shortMessage ||
         error?.reason ||
         error?.message ||
-        "Неизвестная ошибка";
+        "Unknown error";
 
     if (message.includes("Wait before collecting wood")) {
-        return "Подожди перед следующим сбором дерева.";
+        return "Wait till you can collect more wood.";
     }
 
     if (message.includes("Wait before collecting stones")) {
-        return "Подожди перед следующим сбором камня.";
+        return "Wait till you can collect more stone.";
     }
 
     if (message.includes("Not enough wood")) {
-        return "Недостаточно дерева для создания предмета.";
+        return "Not enough wood to craft item.";
     }
 
     if (message.includes("Not enough stone")) {
-        return "Недостаточно камня для создания предмета.";
+        return "Not enough stone to craft item.";
     }
 
     return message;
@@ -63,7 +63,7 @@ function formatError(error) {
 async function connectWallet() {
     try {
         if (!window.ethereum) {
-            showStatus("Установи MetaMask, чтобы играть.");
+            showStatus("Install MetaMask to play.");
             return;
         }
 
@@ -80,7 +80,7 @@ async function connectWallet() {
                 ]);
             } catch (error) {
                 showStatus(
-                    "Переключи MetaMask на сеть Sepolia и подключись снова."
+                    "Switch MetaMask to the Sepolia network and reconnect.."
                 );
                 return;
             }
@@ -90,7 +90,7 @@ async function connectWallet() {
         }
 
         if (network.chainId !== SEPOLIA_CHAIN_ID) {
-            showStatus("Выбери сеть Sepolia в MetaMask.");
+            showStatus("Select the Sepolia network in MetaMask.");
             return;
         }
 
@@ -104,26 +104,26 @@ async function connectWallet() {
         );
 
         $("wallet").textContent =
-            "Кошелёк: " +
+            "Wallet: " +
             playerAddress.slice(0, 6) +
             "..." +
             playerAddress.slice(-4);
 
-        $("network").textContent = "Сеть: Sepolia";
+        $("network").textContent = "Network: Sepolia";
 
-        $("connectButton").textContent = "Кошелёк подключён";
+        $("connectButton").textContent = "Wallet is connected";
 
-        showStatus("Подключение успешно! Загружаю данные из блокчейна...");
+        showStatus("Connection successful! Downloading data from the blockchain....");
 
         await refreshData();
     } catch (error) {
-        showStatus("Ошибка подключения: " + formatError(error));
+        showStatus("Connection error: " + formatError(error));
     }
 }
 
 async function refreshData() {
     if (!contract || !playerAddress) {
-        showStatus("Сначала подключи MetaMask.");
+        showStatus("First, connect MetaMask.");
         return;
     }
 
@@ -149,16 +149,16 @@ async function refreshData() {
         $("items").textContent = items.toString();
 
         $("achievement").textContent = won
-            ? "🏆 Достижение открыто!"
-            : "Достижение пока не открыто";
+            ? "🏆 Achievement unlocked!"
+            : "The achievement is not yet unlocked.";
 
         lastWoodTime = Number(woodTime);
         lastStoneTime = Number(stoneTime);
 
         updateTimers();
-        showStatus("Данные успешно загружены из блокчейна.");
+        showStatus("Data successfully downloaded from blockchain.");
     } catch (error) {
-        showStatus("Не удалось прочитать данные: " + formatError(error));
+        showStatus("Failed to read data: " + formatError(error));
     }
 }
 
@@ -176,12 +176,12 @@ function updateTimers() {
     );
 
     $("woodTimer").textContent = woodRemaining > 0
-        ? `Следующий сбор через ${woodRemaining} сек.`
-        : "Можно собирать дерево";
+        ? `Next collection in ${woodRemaining} sec.`
+        : "You can collect wood";
 
     $("stoneTimer").textContent = stoneRemaining > 0
-        ? `Следующий сбор через ${stoneRemaining} сек.`
-        : "Можно собирать камень";
+        ? `Next collection in ${stoneRemaining} sec.`
+        : "You can collect wood";
 
     $("woodButton").disabled =
         !contract || woodRemaining > 0;
@@ -194,7 +194,7 @@ function updateTimers() {
 
 async function sendTransaction(methodName, successMessage) {
     if (!contract) {
-        showStatus("Сначала подключи MetaMask.");
+        showStatus("First, connect MetaMask.");
         return;
     }
 
@@ -207,11 +207,11 @@ async function sendTransaction(methodName, successMessage) {
     buttons.forEach(button => button.disabled = true);
 
     try {
-        showStatus("Подтверди транзакцию в MetaMask...");
+        showStatus("Confirm the transaction in MetaMask...");
 
         const tx = await contract[methodName]();
 
-        showStatus("Транзакция отправлена. Ожидаю подтверждения...");
+        showStatus("The transaction has been sent. Awaiting confirmation....");
 
         await tx.wait();
 
@@ -219,7 +219,7 @@ async function sendTransaction(methodName, successMessage) {
 
         await refreshData();
     } catch (error) {
-        showStatus("Ошибка: " + formatError(error));
+        showStatus("Error: " + formatError(error));
     } finally {
         updateTimers();
     }
